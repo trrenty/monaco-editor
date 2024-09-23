@@ -137,13 +137,13 @@
 //  }
 require(['vs/loader'], function () {
   require(['jquery', 'vs/editor/editor.main'], function ($) {
-    $(document).on('xwiki:dom:updated', function () {
+    let attach_monaco = function () {
       console.log('monaco');
 
       $('textarea')
         .filter(function () {
           // StyleSheetExtension
-          return this.id.match(/XWiki.(JavaScriptExtension|StyleSheetExtension)_\d_code/);
+          return this.id.match(/(XWiki.(JavaScriptExtension|StyleSheetExtension)_\d_code|content)/);
         })
         .each(function () {
           let textarea = $(this);
@@ -158,7 +158,7 @@ require(['vs/loader'], function () {
             'min-height': '300px',
             'height': '90%'
           });
-          let language = editorId.indexOf('JavaScriptExtension') > 0 ? 'javascript' : 'css';
+          let language = editorId.indexOf('JavaScriptExtension') &gt; 0 ? 'javascript' : 'css';
           // The monaco editor tokenizer seems to create, at some point, rules for the highlighter. It expects the rules to have an 'include'
           // parameter of type string. If the 'rule' if of type Array, the 'include' property is a method. This breaks the highlighter.
           // As a hack, we delete the include method from the Array prototype and add it back after initializing the editor.
@@ -171,7 +171,7 @@ require(['vs/loader'], function () {
             automaticLayout: true
           });
           // Set the include property back after a while, since the editor is loaded async. TODO: look for a "ready" event.
-          setTimeout(() => {
+          setTimeout(() =&gt; {
             Array.prototype.include = oldInclude;
             console.log('Include set back.');
           }, 1000);
@@ -181,12 +181,12 @@ require(['vs/loader'], function () {
           editor.addCommand(monaco.KeyCode.F9, function () {
             editor.getAction('editor.action.formatDocument').run();
           });
-          console.log('hello');
         });
-    });
+    };
+    $(document).on('xwiki:dom:updated', attach_monaco);
+    attach_monaco();
   })
 })
-
 
 </code>
     </property>
@@ -479,6 +479,169 @@ require(['vs/loader'], function () {
     </property>
     <property>
       <name>monaco.editor.init</name>
+    </property>
+    <property>
+      <parameters/>
+    </property>
+    <property>
+      <scope>wiki</scope>
+    </property>
+  </object>
+  <object>
+    <name>MonacoEditor.Code.Editor</name>
+    <number>1</number>
+    <className>XWiki.UIExtensionClass</className>
+    <guid>4ae4381d-8358-4a4a-9cd7-203a18ebf4f1</guid>
+    <class>
+      <name>XWiki.UIExtensionClass</name>
+      <customClass/>
+      <customMapping/>
+      <defaultViewSheet/>
+      <defaultEditSheet/>
+      <defaultWeb/>
+      <nameField/>
+      <validationScript/>
+      <async_cached>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_cached</name>
+        <number>3</number>
+        <prettyName>Cached</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_cached>
+      <async_context>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>1</multiSelect>
+        <name>async_context</name>
+        <number>4</number>
+        <prettyName>Context elements</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator>, </separator>
+        <separators>|, </separators>
+        <size>5</size>
+        <unmodifiable>0</unmodifiable>
+        <values>action=Action|doc.reference=Document|doc.revision|icon.theme=Icon theme|locale=Language|rendering.defaultsyntax=Default syntax|rendering.restricted=Restricted|rendering.targetsyntax=Target syntax|request.base=Request base URL|request.cookies|request.headers|request.parameters=Request parameters|request.remoteAddr|request.session|request.url=Request URL|request.wiki=Request wiki|sheet|user=User|wiki=Wiki</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </async_context>
+      <async_enabled>
+        <defaultValue>0</defaultValue>
+        <disabled>0</disabled>
+        <displayFormType>select</displayFormType>
+        <displayType/>
+        <name>async_enabled</name>
+        <number>2</number>
+        <prettyName>Asynchronous rendering</prettyName>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.BooleanClass</classType>
+      </async_enabled>
+      <content>
+        <disabled>0</disabled>
+        <editor>Text</editor>
+        <name>content</name>
+        <number>1</number>
+        <prettyName>Executed Content</prettyName>
+        <restricted>0</restricted>
+        <rows>25</rows>
+        <size>120</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </content>
+      <extensionPointId>
+        <disabled>0</disabled>
+        <name>extensionPointId</name>
+        <number>5</number>
+        <prettyName>Extension Point ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </extensionPointId>
+      <name>
+        <disabled>0</disabled>
+        <name>name</name>
+        <number>6</number>
+        <prettyName>Extension ID</prettyName>
+        <size>30</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.StringClass</classType>
+      </name>
+      <parameters>
+        <contenttype>PureText</contenttype>
+        <disabled>0</disabled>
+        <editor>PureText</editor>
+        <name>parameters</name>
+        <number>7</number>
+        <prettyName>Extension Parameters</prettyName>
+        <restricted>0</restricted>
+        <rows>10</rows>
+        <size>40</size>
+        <unmodifiable>0</unmodifiable>
+        <classType>com.xpn.xwiki.objects.classes.TextAreaClass</classType>
+      </parameters>
+      <scope>
+        <cache>0</cache>
+        <disabled>0</disabled>
+        <displayType>select</displayType>
+        <freeText>forbidden</freeText>
+        <largeStorage>0</largeStorage>
+        <multiSelect>0</multiSelect>
+        <name>scope</name>
+        <number>8</number>
+        <prettyName>Extension Scope</prettyName>
+        <relationalStorage>0</relationalStorage>
+        <separator> </separator>
+        <separators>|, </separators>
+        <size>1</size>
+        <unmodifiable>0</unmodifiable>
+        <values>wiki=Current Wiki|user=Current User|global=Global</values>
+        <classType>com.xpn.xwiki.objects.classes.StaticListClass</classType>
+      </scope>
+    </class>
+    <property>
+      <async_cached>0</async_cached>
+    </property>
+    <property>
+      <async_context>
+        <value>rendering.defaultsyntax</value>
+        <value>rendering.restricted</value>
+        <value>rendering.targetsyntax</value>
+        <value>request.base</value>
+        <value>request.cookies</value>
+        <value>request.headers</value>
+        <value>request.parameters</value>
+        <value>request.remoteAddr</value>
+        <value>request.url</value>
+        <value>request.wiki</value>
+        <value>user</value>
+        <value>wiki</value>
+      </async_context>
+    </property>
+    <property>
+      <async_enabled>0</async_enabled>
+    </property>
+    <property>
+      <content>{{velocity}}
+#if ($xcontext.action == 'edit' &amp;&amp; "$request.editor" == 'wiki')
+  #set ($monacoConfig = $xwiki.getDocument('MonacoEditor.Code.ConfigurableClass'))
+  #set ($isEnabled = $monacoConfig.getObject('MonacoEditor.Code.ConfigurationClass').getProperty('enabled').value)
+  #if ($isEnabled == 1)
+    #set ($discard = $xwiki.jsx.use('MonacoEditor.Code.Editor'))
+    #set ($discard = $xwiki.ssx.use('MonacoEditor.Code.Editor'))
+  #end
+#end
+{{/velocity}}</content>
+    </property>
+    <property>
+      <extensionPointId>org.xwiki.plaftorm.editactions</extensionPointId>
+    </property>
+    <property>
+      <name>monaco.editor.content.init</name>
     </property>
     <property>
       <parameters/>
