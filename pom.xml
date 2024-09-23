@@ -31,7 +31,7 @@
   <artifactId>application-monaco-editor</artifactId>
 
   <name>Monaco Editor Integration - Parent POM</name>
-  <version>1.1-SNAPSHOT</version>
+  <version>1.2-SNAPSHOT</version>
   <description>Adds support for editing Javascript and CSS extensions using Monaco.</description>
 
   <packaging>pom</packaging>

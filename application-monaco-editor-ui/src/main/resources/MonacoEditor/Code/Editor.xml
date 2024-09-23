@@ -158,7 +158,107 @@ require(['vs/loader'], function () {
             'min-height': '300px',
             'height': '90%'
           });
-          let language = editorId.indexOf('JavaScriptExtension') &gt; 0 ? 'javascript' : 'css';
+          #[[
+          monaco.languages.register({ id: "xwikiContent" });
+          monaco.languages.setMonarchTokensProvider('xwikiContent', {
+              "keywords": [
+                "#if", "#else", "#elseif", "#end", "#foreach", "#set", "#include", "#parse",
+                "#macro", "#define", "#stop", "#evaluate", "#break", "#literal"
+              ],
+              "operators": [
+                "=", ">", "&lt;", "!", "~", "?", ":", "==", "&lt;=", ">=", "!=", "&amp;&amp;", "||", "++", "--",
+                "+", "-", "*", "/", "&amp;", "|", "^", "%", "&lt;&lt;", ">>", ">>>", "+=", "-=", "*=", "/=",
+                "&amp;=", "|=", "^=", "%=", "&lt;&lt;=", ">>=", ">>>="
+              ],
+              "symbols": "/[=>&lt;!~?:&amp;|+\\-*/^%]+/",
+              "escapes": "/\\\\(?:[abfnrtv\\\\\"']|x[0-9A-Fa-f]{1,4}|u[0-9A-Fa-f]{4}|U[0-9A-Fa-f]{8})/",
+              "tokenizer": {
+                "root": [
+                  // Handle opening of {{html}} block
+                  { "regex": "\\{\\{html\\}\\}", "action": { "token": "html", "next": "@htmlMode" } },
+
+                  // Velocity variables (e.g. $variable)
+                  { "regex": "\\$[a-zA-Z_][\\w]*", "action": "variable" },
+
+                  // Velocity directives (e.g. #if, #foreach)
+                  { "regex": "#\\w+", "action": { "cases": { "@keywords": "keyword", "@default": "identifier" } } },
+
+                  // Whitespace
+                  { "include": "@whitespace" },
+
+                  // Brackets and symbols
+                  { "regex": "[{}()\\[\\]]", "action": "@brackets" },
+                  { "regex": "[&lt;&gt;](?!@symbols)", "action": "@brackets" },
+                  { "regex": "@symbols", "action": { "cases": { "@operators": "operator", "@default": "" } } },
+
+                  // Numbers
+                  { "regex": "\\d*\\.\\d+([eE][\\-+]?\\d+)?", "action": "number.float" },
+                  { "regex": "0[xX][0-9a-fA-F]+", "action": "number.hex" },
+                  { "regex": "\\d+", "action": "number" },
+
+                  // Delimiters
+                  { "regex": "[;,.]", "action": "delimiter" },
+
+                  // Strings
+                  { "regex": "\"([^\"\\\\]|\\\\.)*$", "action": "string.invalid" },
+                  { "regex": "\"", "action": { "token": "string.quote", "bracket": "@open", "next": "@string" } },
+                  { "regex": "'[^\\\\']'", "action": "string" },
+                  { "regex": "'(@escapes)'", "action": ["string", "string.escape", "string"] },
+                  { "regex": "'", "action": "string.invalid" }
+                ],
+
+                "comment": [
+                  // Single-line Velocity comment (##)
+                  { "regex": "##.*$", "action": "comment" },
+
+                  // Multi-line Velocity comment (#* ... *#)
+                  { "regex": "#\\*", "action": { "token": "comment", "next": "@multilineComment" } }
+                ],
+
+                "multilineComment": [
+                  { "regex": "[^*#]+", "action": "comment" },
+                  { "regex": "\\*#", "action": { "token": "comment", "next": "@pop" } },
+                  { "regex": ".", "action": "comment" }
+                ],
+
+                "string": [
+                  { "regex": "[^\\\\\"]+", "action": "string" },
+                  { "regex": "@escapes", "action": "string.escape" },
+                  { "regex": "\\\\.", "action": "string.escape.invalid" },
+                  { "regex": "\"", "action": { "token": "string.quote", "bracket": "@close", "next": "@pop" } }
+                ],
+
+                "whitespace": [
+                  { "regex": "[ \\t\\r\\n]+", "action": "white" }
+                ],
+
+                // HTML mode: to tokenize HTML inside {{html}} ... {{/html}} including Velocity elements
+                "htmlMode": [
+                  // HTML tags
+                  { "regex": "&lt;\\/?[\\w\\s=\"']+>", "action": "tag" },
+
+                  // Handle Velocity variables inside HTML (e.g. $var)
+                  { "regex": "\\$[a-zA-Z_][\\w]*", "action": "variable" },
+
+                  // Handle Velocity directives inside HTML (e.g. #if, #foreach)
+                  { "regex": "#\\w+", "action": { "cases": { "@keywords": "keyword", "@default": "identifier" } } },
+
+                  // Text content within HTML
+                  { "regex": "[^&lt;\\{]+", "action": "html.text" },
+
+                  // Handle closing of {{html}} block
+                  { "regex": "\\{\\{\\/html\\}\\}", "action": { "token": "html", "next": "@pop" } }
+                ]
+              }
+            }
+            );
+          ]]#
+          let language = 'xwikiContent';
+          if (editorId.indexOf('JavaScriptExtension') &gt; 0) {
+            language = 'javascript';
+          } else if (editorId.indexOf('StyleSheet') &gt; 0) {
+            language = 'css';
+          }
           // The monaco editor tokenizer seems to create, at some point, rules for the highlighter. It expects the rules to have an 'include'
           // parameter of type string. If the 'rule' if of type Array, the 'include' property is a method. This breaks the highlighter.
           // As a hack, we delete the include method from the Array prototype and add it back after initializing the editor.
