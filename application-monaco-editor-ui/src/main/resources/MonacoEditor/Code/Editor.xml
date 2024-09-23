@@ -139,6 +139,7 @@ require(['vs/loader'], function () {
   require(['jquery', 'vs/editor/editor.main'], function ($) {
     $(document).on('xwiki:dom:updated', function () {
       console.log('monaco');
+
       $('textarea')
         .filter(function () {
           // StyleSheetExtension
@@ -146,7 +147,8 @@ require(['vs/loader'], function () {
         })
         .each(function () {
           let textarea = $(this);
-          let editorId = textarea.prop("id") + '_monaco';
+          let textareaId = textarea.prop('id');
+          let editorId = textareaId + '_monaco';
           if (document.getElementById(editorId)) {
             return;
           }
@@ -165,7 +167,7 @@ require(['vs/loader'], function () {
           let editor = monaco.editor.create(editorDiv[0], {
             language: language,
             theme: 'vs-dark',
-            value: $(this).val(),
+            value: textarea.val(),
             automaticLayout: true
           });
           // Set the include property back after a while, since the editor is loaded async. TODO: look for a "ready" event.
@@ -173,29 +175,19 @@ require(['vs/loader'], function () {
             Array.prototype.include = oldInclude;
             console.log('Include set back.');
           }, 1000);
+          editor.getModel().onDidChangeContent(() =&gt; {
+            textarea.val(editor.getValue());
+          });
           editor.addCommand(monaco.KeyCode.F9, function () {
             editor.getAction('editor.action.formatDocument').run();
           });
           console.log('hello');
         });
-      $(document).on('xwiki:actions:beforeSave', function () {
-        $('.MonacoEditor')
-          .filter(function () {
-            return this.id.match(/XWiki.(JavaScriptExtension|StyleSheetExtension)_\d_code_monaco/);
-          }).each(function () {
-            let editorId = $(this).prop("id");
-            let textareaId = editorId.slice(0, -7);
-            let textarea = $(document.getElementById(textareaId));
-            let editor = monaco.editor.getEditors().find(e =&gt; editorId == e._domElement.id);
-            if (editor) {
-              textarea.val(editor.getValue());
-            }
-            console.log("helwwwwlo");
-          });
-      });
     });
   })
 })
+
+
 </code>
     </property>
     <property>
