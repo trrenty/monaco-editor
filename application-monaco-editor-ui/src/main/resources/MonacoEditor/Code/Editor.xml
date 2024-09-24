@@ -135,6 +135,15 @@
 //      deps: ['localhost:8080/xwiki/webjars/wiki%3Axwiki/monaco-editor/0.39.0/min/vs/loader.js']
 //    }
 //  }
+let editor;
+function insertTags(tagOpen, tagClose, sampleText) {
+  let selection = editor.getSelection();
+  let selectionText = editor.getModel().getValueInRange(selection);
+  editor.executeEdits("", [
+    { range: selection, text: tagOpen + selectionText + tagClose }
+  ]);
+}
+
 require(['vs/loader'], function () {
   require(['jquery', 'vs/editor/editor.main'], function ($) {
     let attach_monaco = function () {
@@ -264,7 +273,7 @@ require(['vs/loader'], function () {
           // As a hack, we delete the include method from the Array prototype and add it back after initializing the editor.
           const oldInclude = Array.prototype.include;
           delete Array.prototype.include;
-          let editor = monaco.editor.create(editorDiv[0], {
+          editor = monaco.editor.create(editorDiv[0], {
             language: language,
             theme: 'vs-dark',
             value: textarea.val(),
