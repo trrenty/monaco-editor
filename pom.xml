@@ -22,20 +22,16 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-
   <parent>
     <groupId>org.xwiki.contrib</groupId>
     <artifactId>parent-platform</artifactId>
     <version>15.10</version>
   </parent>
-  <artifactId>application-monaco-editor</artifactId>
-
+  <artifactId>monaco-editor</artifactId>
   <name>Monaco Editor Integration - Parent POM</name>
-  <version>1.2-SNAPSHOT</version>
-  <description>Adds support for editing Javascript and CSS extensions using Monaco.</description>
-
+  <version>1.0-SNAPSHOT</version>
+  <description>Adds support for editing Javascript, CSS extensions and XWiki content using Monaco.</description>
   <packaging>pom</packaging>
-
   <developers>
     <developer>
       <id>trrenty</id>
@@ -54,10 +50,7 @@
       <name>Pierre Jeanjean</name>
     </developer>
   </developers>
-
   <modules>
-
-    <module>application-monaco-editor-ui
-    </module>
+    <module>monaco-editor-ui</module>
   </modules>
 </project>

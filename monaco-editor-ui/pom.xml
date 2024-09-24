@@ -24,16 +24,13 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.xwiki.contrib</groupId>
-    <artifactId>application-monaco-editor</artifactId>
-    <version>1.2-SNAPSHOT</version>
+    <artifactId>monaco-editor</artifactId>
+    <version>1.0-SNAPSHOT</version>
   </parent>
-
   <name>Monaco Editor Integration</name>
-  <artifactId>application-monaco-editor-ui</artifactId>
-  <description>Adds support for editing Javascript and CSS extensions using Monaco.</description>
-
+  <artifactId>monaco-editor-ui</artifactId>
+  <description>Adds support for editing Javascript, CSS extensions and XWiki content using Monaco.</description>
   <packaging>xar</packaging>
-
   <dependencies>
     <dependency>
       <groupId>org.webjars.npm</groupId>
@@ -41,6 +38,4 @@
       <version>0.50.0</version>
     </dependency>
   </dependencies>
-
-
 </project>
