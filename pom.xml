@@ -49,6 +49,10 @@
       <id>afarcas</id>
       <name>Alex Farcas</name>
     </developer>
+    <developer>
+      <id>pjeanjean</id>
+      <name>Pierre Jeanjean</name>
+    </developer>
   </developers>
 
   <modules>
