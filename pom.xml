@@ -53,5 +53,6 @@
   </developers>
   <modules>
     <module>monaco-editor-ui</module>
+    <module>monaco-editor-xip</module>
   </modules>
 </project>
